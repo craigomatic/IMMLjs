@@ -1,0 +1,102 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<IMML Camera="Camera" Gravity="0,-9.8,0" GlobalIllumination="#999999" xmlns="http://schemas.vastpark.com/2007/imml/">
+  
+  <!--<Trigger Event="AirTap" Target="{Binding SceneTapped}" />
+  
+  <Trigger Event="VoiceCommand" Target="{Binding VoiceCommandRecognised}">
+    <Condition Type="Allow" Expression="Open Sesame" Source="EventData"></Condition>
+  </Trigger>-->
+  
+  <Camera Name="Camera" Position="0,0,-3" />
+  <Light Type="Spot" Diffuse="#00ff00" Position="0,1,-8" Rotation="0,0,0" />
+
+  <!--Physics enabled boxes that will fall from the sky-->
+  <Primitive Name="BoxPrimitive" Type="Box" Size="0.2,0.2,0.2" Position="-0.5,10,7">
+    <Physics Enabled="True" Movable="True" Weight="1">
+      <Interaction StaticFriction="0.2" Elasticity="0.8" Element="" />
+    </Physics>
+    <MaterialGroup Id="-1">
+      <Material Diffuse="#ff0000" />
+    </MaterialGroup>
+  </Primitive>
+  <Primitive Name="BoxPrimitive" Type="Box" Size="0.2,0.2,0.2" Position="-0.5,11,7">
+    <Physics Enabled="True" Movable="True" Weight="1">
+      <Interaction StaticFriction="0.2" Elasticity="0.8" Element="" />
+    </Physics>
+    <MaterialGroup Id="-1">
+      <Material Diffuse="#ff0000" />
+    </MaterialGroup>
+  </Primitive>
+  <Primitive Name="BoxPrimitive" Type="Box" Size="0.2,0.2,0.2" Position="-0.5,12,7">
+    <Physics Enabled="True" Movable="True" Weight="1">
+      <Interaction StaticFriction="0.2" Elasticity="0.8" Element="" />
+    </Physics>
+    <MaterialGroup Id="-1">
+      <Material Diffuse="#ff0000" />
+    </MaterialGroup>
+  </Primitive>
+  <Primitive Name="BoxPrimitive" Type="Box" Size="0.2,0.2,0.2" Position="-0.5,13,7">
+    <Physics Enabled="True" Movable="True" Weight="1">
+      <Interaction StaticFriction="0.2" Elasticity="0.8" Element="" />
+    </Physics>
+    <MaterialGroup Id="-1">
+      <Material Diffuse="#ff0000" />
+    </MaterialGroup>
+  </Primitive>
+  
+  <Primitive Type="Cylinder" Name="TexturePrimitive" Position="-2,0,1">
+    <MaterialGroup Id="-1">
+      <Texture Source="https://pbs.twimg.com/media/D0limAGWwAEgDtR.jpg" />
+    </MaterialGroup>
+  </Primitive>
+  
+  <Sound Position="0,0,0" Loop="True" Enabled="True" Spatial="False" Source="https://urhoimmldata001.blob.core.windows.net/sample/audio/clock.wav" />
+
+  <Text Alignment="Left" Value="The cylinder, cone and plane are nested within the green sphere and come from a separate document" Position="1,1.5,2" Colour="#0000ff" Size="26" />
+  
+  <Include Source="imml/include.imml" />
+
+  <Text Value="These boxes are located within a Stack element ->" Position="-10.5,3,0" Alignment="Left" Colour="#ffd700" Size="20" />
+  
+  <!--Elements nested within a Stack element will be placed inside a stack in the scene-->
+  <Stack Position="-4,0,0" Spacing="0,1.2,0">
+    <Primitive Type="Box">
+      <MaterialGroup Id="-1">
+        <Material Diffuse="#ffd700" />
+      </MaterialGroup>
+    </Primitive>
+    <Primitive Type="Box">
+      <MaterialGroup Id="-1">
+        <Material Diffuse="#ffd700" />
+      </MaterialGroup>
+    </Primitive>
+    <Primitive Type="Box">
+      <MaterialGroup Id="-1">
+        <Material Diffuse="#ffd700" />
+      </MaterialGroup>
+    </Primitive>
+    <Primitive Type="Box">
+      <MaterialGroup Id="-1">
+        <Material Diffuse="#ffd700" />
+      </MaterialGroup>
+    </Primitive>
+    <Primitive Type="Box">
+      <MaterialGroup Id="-1">
+        <Material Diffuse="#ffd700" />
+      </MaterialGroup>
+    </Primitive>
+  </Stack>
+
+  <Model Source="https://urhoimmldata001.blob.core.windows.net/sample/models/HoverBike.mdl" Position="0,0,8" Size="1,1,1">
+    <MaterialGroup Id="-1">
+      <Material Diffuse="#ff0000" />
+    </MaterialGroup>
+  </Model>
+
+  <Primitive Type="Plane" Position="0,-1,0" Size="100,1,100">
+    <Physics Enabled="True" Bounding="ConvexHull" Weight="20" Movable ="False"/>
+    <MaterialGroup Id="-1">
+      <Material Diffuse="#F0CD8B"/>
+    </MaterialGroup>
+  </Primitive>
+</IMML>

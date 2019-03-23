@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<IMML xmlns="http://schemas.vastpark.com/2007/imml/">
+  <Primitive Rotation="0,90,0" Position="0,0,2" Size="0.4,0.4,0.4" Type="Sphere" Name="ParentSphere">
+    <Trigger Target="{Binding SphereLoaded}" Event="Loaded"/>
+    <MaterialGroup Id="-1">
+      <Material Diffuse="#00ff00"/>
+    </MaterialGroup>
+    <Primitive Position="0.5,0,2" Size="0.4,0.4,0.4" Type="Cylinder" Name="ChildCylinder">
+      <MaterialGroup Id="-1">
+        <Material Diffuse="#0000ff"/>
+      </MaterialGroup>
+    </Primitive>
+    <Primitive Position="0,0.5,2" Size="0.4,0.4,0.4" Type="Cone" Name="ChildCone">
+      <MaterialGroup Id="-1">
+        <Material Diffuse="#0000ff"/>
+      </MaterialGroup>
+    </Primitive>
+    <Primitive Position="0,-0.5,2" Size="0.4,0.4,0.4" Type="Plane" Name="ChildPlane">
+      <MaterialGroup Id="-1">
+        <Material Diffuse="#0000ff"/>
+      </MaterialGroup>
+    </Primitive>
+  </Primitive>
+</IMML>
