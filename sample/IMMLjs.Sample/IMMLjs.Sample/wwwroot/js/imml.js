@@ -116,6 +116,7 @@ imml.load = function (parentElement) {
         imml.loadPrimitives(immlNode, scene);
         imml.loadModels(immlNode, scene);
         imml.loadSounds(immlNode, scene);
+        imml.loadText(immlNode, scene);
     });
 
     
@@ -239,6 +240,8 @@ imml.loadPrimitive = function (item, scene, parent) {
     var itemType = item.getAttribute('Type');
     var mesh = null;
 
+    var segments = _resolveSegments(item.getAttribute('Complexity'));
+
     switch (itemType.toLowerCase()) {
         case "box":
             mesh = BABYLON.Mesh.CreateBox(item.getAttribute('Name'), 1, scene);
@@ -248,16 +251,21 @@ imml.loadPrimitive = function (item, scene, parent) {
             
             break;
         case "cylinder":
-            var segments = _resolveSegments(item.getAttribute('Complexity'));
             mesh = BABYLON.Mesh.CreateCylinder(item.getAttribute('Name'), 1, 1, 1, segments, segments, scene, false);
             mesh.position = _stringToVector3(item.getAttribute('Position'));
             mesh.scaling = _stringToVector3(item.getAttribute('Size'));
             mesh.rotation = _vectorStringToRadians(item.getAttribute('Rotation'));
             
             break;
+        case "cone":
+            mesh = BABYLON.MeshBuilder.CreateCylinder(item.getAttribute('Name'), { diameterTop: 0, tesselation: segments });
+            mesh.position = _stringToVector3(item.getAttribute('Position'));
+            mesh.scaling = _stringToVector3(item.getAttribute('Size'));
+            mesh.rotation = _vectorStringToRadians(item.getAttribute('Rotation'));
+
+            break;
         case "sphere":
             //look for complexity attribute, map to segments
-            var segments = _resolveSegments(item.getAttribute('Complexity'));
             mesh = BABYLON.Mesh.CreateSphere(item.getAttribute('Name'), segments, 1, scene);
             mesh.position = _stringToVector3(item.getAttribute('Position'));
             mesh.scaling = _stringToVector3(item.getAttribute('Size'));
@@ -265,7 +273,7 @@ imml.loadPrimitive = function (item, scene, parent) {
             
             break;
         case "plane":
-            var mesh = BABYLON.Mesh.CreateBox(item.getAttribute('Name'), 1, scene);
+            mesh = BABYLON.Mesh.CreateBox(item.getAttribute('Name'), 1, scene);
             mesh.position = _stringToVector3(item.getAttribute('Position'));
             mesh.rotation = _vectorStringToRadians(item.getAttribute('Rotation'));
             mesh.scaling = _stringToVector3(item.getAttribute('Size'));
@@ -394,7 +402,7 @@ imml.loadLights = function (immlNode, scene) {
 }
 
 imml.loadSounds = function (immlNode, scene) {
-    //<sound source="audio\track.mp3" >...</model>
+    //<sound source="audio\track.mp3" >...</sound>
 
     var sounds = immlNode.querySelectorAll('Sound');
 
@@ -418,18 +426,47 @@ imml.loadSounds = function (immlNode, scene) {
     }
 }
 
+imml.loadText = function (immlNode, scene) {
+    //<text value="hello!" >...</text>
+
+    var text = immlNode.querySelectorAll('Text');
+
+    for (var i = 0; i < text.length; i++) {
+        var item = text.item(i);
+
+        var fontColour = item.getAttribute('Colour');
+        var font = item.getAttribute("Size") + "px" + "arial";
+        var dynamicTexture = new BABYLON.DynamicTexture(item.getAttribute('Name') + "_tex", { width: 512, height: 512 }, scene);
+
+        var textMaterial = new BABYLON.StandardMaterial(item.getAttribute("Name") + "_mat", scene);
+        textMaterial.diffuseTexture = dynamicTexture;
+        dynamicTexture.drawText(item.getAttribute("Value"), null, null, font, fontColour, "transparent", true, true);
+
+        var textHost = BABYLON.MeshBuilder.CreatePlane(item.getAttribute('Name'), { width: 1, height: 1 }, scene);
+        textHost.material = textMaterial;
+        textHost.position = _stringToVector3(item.getAttribute('Position'));
+        textHost.rotation = _vectorStringToRadians(item.getAttribute('Rotation'));
+
+        _loadTriggers(item, textHost, scene);        
+    }
+}
 function _loadTriggers(item, mesh, scene) {
     var triggers = item.querySelectorAll('Trigger');
 
     for (var i = 0; i < triggers.length; i++) {
-        var item = triggers.item(i);
+        var trigger = triggers.item(i);
 
-        var event = item.getAttribute('Event').toLowerCase();
-        var target = item.getAttribute('Target');
+        var event = trigger.getAttribute('Event').toLowerCase();
+        var target = trigger.getAttribute('Target');
 
         //handle loaded immediately here
         if (event == "loaded") {
-            window[target](mesh);
+            try {
+                window[target](mesh);
+            }
+            catch(exception) {
+                console.log("error loading trigger");
+            }
         }
         
         mesh.actionManager = new BABYLON.ActionManager(scene);

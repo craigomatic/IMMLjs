@@ -50,7 +50,7 @@
     </MaterialGroup>
   </Primitive>
   
-  <Sound Position="0,0,0" Loop="True" Enabled="True" Spatial="False" Source="https://urhoimmldata001.blob.core.windows.net/sample/audio/clock.wav" />
+  <Sound Position="0,0,0" Loop="True" Enabled="True" Spatial="False" Source="audio/clock.wav" />
 
   <Text Alignment="Left" Value="The cylinder, cone and plane are nested within the green sphere and come from a separate document" Position="1,1.5,2" Colour="#0000ff" Size="26" />
   
