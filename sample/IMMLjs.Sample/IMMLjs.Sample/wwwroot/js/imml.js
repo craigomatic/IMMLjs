@@ -111,6 +111,7 @@ imml.load = function (parentElement) {
 
     imml.fetchIncludes(immlNode, function () {
 
+        imml.loadLayoutElements(immlNode, scene);
         imml.loadLights(immlNode, scene);
         //imml.loadPositionalElements(immlNode, scene);
         imml.loadPrimitives(immlNode, scene);
@@ -130,6 +131,38 @@ imml.load = function (parentElement) {
     window.addEventListener("resize", function () {
         engine.resize();
     });
+}
+
+imml.loadLayoutElements = function (immlNode, scene) {
+
+    //just support Stack for now
+    var stackElements = immlNode.querySelectorAll('Stack');
+
+    for (var i = 0; i < stackElements.length; i++) {
+        var stack = stackElements.item(i);
+
+        var startPos = _stringToVector3(stack.getAttribute('Position'));
+        var startRot = _stringToVector3(stack.getAttribute('Rotation'));
+        var spacing = _stringToVector3(stack.getAttribute('Spacing'));
+
+        //iterate through all child elements of the stack and load them with the specified spacing of the stack
+        //supports only model and primitive, should support all positional elements
+        var stackChildren = stack.querySelectorAll('Model,Primitive'); 
+
+        var currentItem = stackChildren.item(0);
+        currentItem.setAttribute('Position', _vector3ToString(startPos));
+
+        for (var j = 1; j < stackChildren.length; j++) {
+            var child = stackChildren.item(j);
+
+            var nextPosition = _stringToVector3(currentItem.getAttribute('Position')).add(spacing);
+            child.setAttribute('Position', _vector3ToString(nextPosition));
+
+            child.setAttribute('Rotation', _vector3ToString(startRot));
+
+            currentItem = child;
+        }
+    }
 }
 
 imml.loadCamera = function (immlNode, scene) {
@@ -240,27 +273,28 @@ imml.loadPrimitive = function (item, scene, parent) {
     var itemType = item.getAttribute('Type');
     var mesh = null;
 
+    var defaultSize = new BABYLON.Vector3(1, 1, 1);
     var segments = _resolveSegments(item.getAttribute('Complexity'));
 
     switch (itemType.toLowerCase()) {
         case "box":
             mesh = BABYLON.Mesh.CreateBox(item.getAttribute('Name'), 1, scene);
             mesh.position = _stringToVector3(item.getAttribute('Position'));
-            mesh.scaling = _stringToVector3(item.getAttribute('Size'));
+            mesh.scaling = _stringToVector3(item.getAttribute('Size'), defaultSize);
             mesh.rotation = _vectorStringToRadians(item.getAttribute('Rotation'));
             
             break;
         case "cylinder":
             mesh = BABYLON.Mesh.CreateCylinder(item.getAttribute('Name'), 1, 1, 1, segments, segments, scene, false);
             mesh.position = _stringToVector3(item.getAttribute('Position'));
-            mesh.scaling = _stringToVector3(item.getAttribute('Size'));
+            mesh.scaling = _stringToVector3(item.getAttribute('Size'), defaultSize);
             mesh.rotation = _vectorStringToRadians(item.getAttribute('Rotation'));
             
             break;
         case "cone":
             mesh = BABYLON.MeshBuilder.CreateCylinder(item.getAttribute('Name'), { diameterTop: 0, tesselation: segments });
             mesh.position = _stringToVector3(item.getAttribute('Position'));
-            mesh.scaling = _stringToVector3(item.getAttribute('Size'));
+            mesh.scaling = _stringToVector3(item.getAttribute('Size'), defaultSize);
             mesh.rotation = _vectorStringToRadians(item.getAttribute('Rotation'));
 
             break;
@@ -268,7 +302,7 @@ imml.loadPrimitive = function (item, scene, parent) {
             //look for complexity attribute, map to segments
             mesh = BABYLON.Mesh.CreateSphere(item.getAttribute('Name'), segments, 1, scene);
             mesh.position = _stringToVector3(item.getAttribute('Position'));
-            mesh.scaling = _stringToVector3(item.getAttribute('Size'));
+            mesh.scaling = _stringToVector3(item.getAttribute('Size'), defaultSize);
             mesh.rotation = _vectorStringToRadians(item.getAttribute('Rotation'));
             
             break;
@@ -276,7 +310,7 @@ imml.loadPrimitive = function (item, scene, parent) {
             mesh = BABYLON.Mesh.CreateBox(item.getAttribute('Name'), 1, scene);
             mesh.position = _stringToVector3(item.getAttribute('Position'));
             mesh.rotation = _vectorStringToRadians(item.getAttribute('Rotation'));
-            mesh.scaling = _stringToVector3(item.getAttribute('Size'));
+            mesh.scaling = _stringToVector3(item.getAttribute('Size'), defaultSize);
             
             break;
     }
@@ -657,10 +691,14 @@ function _stringToColour3(colourString) {
     }
 }
 
-function _stringToVector3(vectorString) {
+function _vector3ToString(vector) {
+    return vector.x + ',' + vector.y + ',' + vector.z;
+}
+
+function _stringToVector3(vectorString, optionalDefaultSize) {
 
     if (!vectorString || vectorString.length == 0) {
-        return BABYLON.Vector3.Zero();
+        return optionalDefaultSize != null ? optionalDefaultSize : BABYLON.Vector3.Zero();
     }
 
     try {

@@ -60,27 +60,27 @@
   
   <!--Elements nested within a Stack element will be placed inside a stack in the scene-->
   <Stack Position="-4,0,0" Spacing="0,1.2,0">
-    <Primitive Type="Box">
+    <Primitive Name="BoxInStack1" Type="Box">
       <MaterialGroup Id="-1">
         <Material Diffuse="#ffd700" />
       </MaterialGroup>
     </Primitive>
-    <Primitive Type="Box">
+    <Primitive Name="BoxInStack2" Type="Box">
       <MaterialGroup Id="-1">
         <Material Diffuse="#ffd700" />
       </MaterialGroup>
     </Primitive>
-    <Primitive Type="Box">
+    <Primitive Name="BoxInStack3" Type="Box">
       <MaterialGroup Id="-1">
         <Material Diffuse="#ffd700" />
       </MaterialGroup>
     </Primitive>
-    <Primitive Type="Box">
+    <Primitive Name="BoxInStack4" Type="Box">
       <MaterialGroup Id="-1">
         <Material Diffuse="#ffd700" />
       </MaterialGroup>
     </Primitive>
-    <Primitive Type="Box">
+    <Primitive Name="BoxInStack5" Type="Box">
       <MaterialGroup Id="-1">
         <Material Diffuse="#ffd700" />
       </MaterialGroup>
